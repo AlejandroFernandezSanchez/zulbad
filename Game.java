@@ -34,23 +34,24 @@ public class Game
      */
     private void createRooms()
     {
-        Room outside, theater, pub, lab, office;
+        Room chabola, supermercado, comisaria, aparcamiento, discoteca, vertedero;
       
         // create the rooms
-        outside = new Room("outside the main entrance of the university");
-        theater = new Room("in a lecture theater");
-        pub = new Room("in the campus pub");
-        lab = new Room("in a computing lab");
-        office = new Room("in the computing admin office");
+        chabola = new Room("en tu chabola");
+        supermercado = new Room("en el supermercado");
+        comisaria = new Room("en comisaría");
+        discoteca = new Room("en la discoteca de los payos");
+        aparcamiento = new Room("en el aparcamiento");
+        vertedero = new Room("en el vertedero");
         
         // initialise room exits
-        outside.setExits(null, theater, lab, pub);
-        theater.setExits(null, null, null, outside);
-        pub.setExits(null, outside, null, null);
-        lab.setExits(outside, office, null, null);
-        office.setExits(null, null, null, lab);
-
-        currentRoom = outside;  // start game outside
+        chabola.setExits(null, comisaria, aparcamiento, supermercado);
+        supermercado.setExits(null, chabola, null, null);
+        comisaria.setExits(null, null, null, chabola);
+        aparcamiento.setExits(chabola, discoteca, null, vertedero);
+        discoteca.setExits(null, null, null, aparcamiento);
+        vertedero.setExits(null, aparcamiento, null, null);
+        currentRoom = chabola;  // start game chabola
     }
 
     /**
@@ -68,7 +69,7 @@ public class Game
             Command command = parser.getCommand();
             finished = processCommand(command);
         }
-        System.out.println("Thank you for playing.  Good bye.");
+        System.out.println("Gracias por jugar, adios");
     }
 
     /**
@@ -77,23 +78,23 @@ public class Game
     private void printWelcome()
     {
         System.out.println();
-        System.out.println("Welcome to the World of Zuul!");
-        System.out.println("World of Zuul is a new, incredibly boring adventure game.");
-        System.out.println("Type 'help' if you need help.");
+        System.out.println("Bienvenido a Gypsy Life");
+        System.out.println("Este es un juego de aventura donde te metes en la piel de un gitano");
+        System.out.println("Escribe 'ayuda' para obtener ayuda");
         System.out.println();
-        System.out.println("You are " + currentRoom.getDescription());
-        System.out.print("Exits: ");
+        System.out.println("Estás en " + currentRoom.getDescription());
+        System.out.print("Salidas: ");
         if(currentRoom.northExit != null) {
-            System.out.print("north ");
+            System.out.print("norte ");
         }
         if(currentRoom.eastExit != null) {
-            System.out.print("east ");
+            System.out.print("este ");
         }
         if(currentRoom.southExit != null) {
-            System.out.print("south ");
+            System.out.print("sur ");
         }
         if(currentRoom.westExit != null) {
-            System.out.print("west ");
+            System.out.print("oeste ");
         }
         System.out.println();
     }
@@ -108,18 +109,18 @@ public class Game
         boolean wantToQuit = false;
 
         if(command.isUnknown()) {
-            System.out.println("I don't know what you mean...");
+            System.out.println("No sé que quieres...");
             return false;
         }
 
         String commandWord = command.getCommandWord();
-        if (commandWord.equals("help")) {
+        if (commandWord.equals("ayuda")) {
             printHelp();
         }
-        else if (commandWord.equals("go")) {
+        else if (commandWord.equals("ir")) {
             goRoom(command);
         }
-        else if (commandWord.equals("quit")) {
+        else if (commandWord.equals("salir")) {
             wantToQuit = quit(command);
         }
 
@@ -135,11 +136,11 @@ public class Game
      */
     private void printHelp() 
     {
-        System.out.println("You are lost. You are alone. You wander");
-        System.out.println("around at the university.");
+        System.out.println("Atraca gente, encuentra chatarra");
+        System.out.println("y aléjate de la policía.");
         System.out.println();
-        System.out.println("Your command words are:");
-        System.out.println("   go quit help");
+        System.out.println("tus comandos son");
+        System.out.println("   ir salir ayuda");
     }
 
     /** 
@@ -150,7 +151,7 @@ public class Game
     {
         if(!command.hasSecondWord()) {
             // if there is no second word, we don't know where to go...
-            System.out.println("Go where?");
+            System.out.println("a donde quieres ir?");
             return;
         }
 
@@ -158,42 +159,47 @@ public class Game
 
         // Try to leave current room.
         Room nextRoom = null;
-        if(direction.equals("north")) {
+        if(direction.equals("norte")) {
             nextRoom = currentRoom.northExit;
         }
-        if(direction.equals("east")) {
+        if(direction.equals("este")) {
             nextRoom = currentRoom.eastExit;
         }
-        if(direction.equals("south")) {
+        if(direction.equals("sur")) {
             nextRoom = currentRoom.southExit;
         }
-        if(direction.equals("west")) {
+        if(direction.equals("oeste")) {
             nextRoom = currentRoom.westExit;
         }
 
         if (nextRoom == null) {
-            System.out.println("There is no door!");
+            System.out.println("por ahí no hay nada relevante");
         }
         else {
             currentRoom = nextRoom;
-            System.out.println("You are " + currentRoom.getDescription());
-            System.out.print("Exits: ");
+            System.out.println("Estás " + currentRoom.getDescription());
+            System.out.print("Direciones posibles: ");
             if(currentRoom.northExit != null) {
-                System.out.print("north ");
+                System.out.print("norte ");
             }
             if(currentRoom.eastExit != null) {
-                System.out.print("east ");
+                System.out.print("este ");
             }
             if(currentRoom.southExit != null) {
-                System.out.print("south ");
+                System.out.print("sur ");
             }
             if(currentRoom.westExit != null) {
-                System.out.print("west ");
+                System.out.print("oeste ");
             }
             System.out.println();
         }
     }
-
+    
+    public void printLocationInfo(Room room)
+    {
+        
+    }
+    
     /** 
      * "Quit" was entered. Check the rest of the command to see
      * whether we really quit the game.
